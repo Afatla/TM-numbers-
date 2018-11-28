@@ -71,3 +71,7 @@ class Commander(object):
         else:
             writer = RestultsCsv.ResultsCsv(self.results_, self.rr_)
             writer.write_to_csv()
+
+
+
+

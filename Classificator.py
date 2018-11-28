@@ -21,7 +21,7 @@ class Classificator(object):
         return scores_list.index(max_likelihood)
 
     def get_RR(self):
-        return self.n_correct/self.n_iterations
+        return self.n_correct / self.n_iterations
 
 
 
