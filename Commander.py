@@ -1,9 +1,12 @@
+"""This is mian commander of a programm"""
+
 import GmmObject
 import WaveReader
 import WaveToMfcc
 import Classificator
 import CrossValidation
 import numpy as np
+import RestultsCsv
 
 
 class Commander(object):
@@ -15,7 +18,8 @@ class Commander(object):
         self.mfcc_array_ = self.converter.glue_all()
         self.gmm_table_ = []
         self.cross_split = CrossValidation.CrossValidation(self.converter.list_of_speakers, 2)
-
+        self.results_ = np.array([])
+        self.rr_ = np.array([])
 
     def train_all(self):
         self.gmm_table_ = []
@@ -54,4 +58,16 @@ class Commander(object):
             results.append(results_onetest)
             rr[0, i_r] = classificator.get_RR()
             i_r += 1
+
+            self.results_ = results
+            self.rr_ = rr
         return results, rr
+
+    def write_to_csv(self):
+        temp = np.array([])
+
+        if self.results_ == temp or self.rr_ == temp:
+            print("NOTHING TO WRITE")
+        else:
+            writer = RestultsCsv.ResultsCsv(self.results_, self.rr_)
+            writer.write_to_csv()
