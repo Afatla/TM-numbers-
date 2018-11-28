@@ -7,7 +7,7 @@ class Classificator(object):
         self.gmm_list = gmm_list_input
         self.n_correct = 0
 
-    # methodss:
+    # methods:
     def classify(self, mfcc_digit):
         scores_list = []
         for gmm in self.gmm_list:
