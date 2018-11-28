@@ -21,12 +21,16 @@ class WaveToMfcc(object):
     def glue(self, indexes):
         output = []
         for i in range(0, 10):
-            mfcc_i = self.mfcc_array_[indexes[0], i]
-            indexes2 = np.delete(indexes, 0)
-            for row in range(1, len(self.mfcc_array_)):
-                if row in indexes2:
-                    mfcc_i = np.concatenate((mfcc_i, self.mfcc_array_[row][i]), axis=0)
-                    output.append(mfcc_i)
+            if not isinstance(indexes, np.int32):
+                mfcc_i = self.mfcc_array_[indexes[0], i]
+                indexes2 = np.delete(indexes, 0)
+                for row in range(1, len(self.mfcc_array_)):
+                    if row in indexes2:
+                        mfcc_i = np.concatenate((mfcc_i, self.mfcc_array_[row][i]), axis=0)
+                        output.append(mfcc_i)
+            else:
+                mfcc_i = self.mfcc_array_[indexes, i]
+                output.append(mfcc_i)
         return output
 
     def glue_all(self):
