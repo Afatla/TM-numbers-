@@ -9,6 +9,7 @@ class WaveToMfcc(object):
         self.wave_array_ = array
         self.rate_ = rate
         self.mfcc_array_ = self.create_mfcc()
+        self.list_of_speakers = self.mfcc_array_[:, 10]
 
     def create_mfcc(self):
         mfcc_array = self.wave_array_

@@ -28,4 +28,3 @@ class WaveReader(object):
                         names[i2 - 1, 0] = name
         matrix = np.concatenate((matrix, names), axis=1)
         return (matrix, rate)
-

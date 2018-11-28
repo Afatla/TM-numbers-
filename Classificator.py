@@ -6,9 +6,11 @@ class Classificator(object):
         self.mfcc_ = mfcc_input
         self.gmm_list = gmm_list_input
         self.n_correct = 0
+        self.n_iterations = 0
 
     # methods:
     def classify(self, mfcc_digit):
+        self.n_iterations += 1
         scores_list = []
         for gmm in self.gmm_list:
             gmm = gmm.gmm_.score(self.mfcc_)
@@ -18,8 +20,11 @@ class Classificator(object):
             self.n_correct += 1
         return scores_list.index(max_likelihood)
 
-    def get_RR(self, n_correct, n_all):
-        return n_correct/n_all
+    def get_RR(self):
+        return self.n_correct/self.n_iterations
+
+
+
 
 
 
