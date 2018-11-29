@@ -11,10 +11,14 @@ import RestultsCsv
 
 class Commander(object):
 
-    def __init__(self, path_folder):
+    def __init__(self, path_folder, winlen):
+        if winlen != None:
+            self.winlen_ = winlen
+        else:
+            self.winlen_ = 0.025
         self.reader_ = WaveReader.WaveReader(path_folder)
         (self.signals, self.rate) = self.reader_.read_all()
-        self.converter = WaveToMfcc.WaveToMfcc(self.signals, self.rate)
+        self.converter = WaveToMfcc.WaveToMfcc(self.signals, self.rate, self.winlen_)
         self.mfcc_array_ = self.converter.glue_all()
         self.gmm_table_ = []
         self.cross_split = CrossValidation.CrossValidation(self.converter.list_of_speakers, 2)
@@ -61,17 +65,14 @@ class Commander(object):
 
             self.results_ = results
             self.rr_ = rr
+            rr_i = np.mean(rr)
         return results, rr
 
-    def write_to_csv(self):
+    def write_to_csv(self, file_name):
         temp = np.array([])
 
         if self.results_ == temp or self.rr_ == temp:
             print("NOTHING TO WRITE")
         else:
-            writer = RestultsCsv.ResultsCsv(self.results_, self.rr_)
+            writer = RestultsCsv.ResultsCsv(self.results_, self.rr_, file_name)
             writer.write_to_csv()
-
-
-
-

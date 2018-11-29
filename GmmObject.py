@@ -7,7 +7,7 @@ class GmmObject(object):
 
     # constructor
     def __init__(self, n_components, mfcc_input):
-        self.gmm_ = sklearn.mixture.gaussian_mixture.GaussianMixture(n_components=n_components, random_state=20)
+        self.gmm_ = sklearn.mixture.gaussian_mixture.GaussianMixture(n_components=n_components, random_state=3)
         self.untrained = True
         self.mfcc_ = mfcc_input
 
@@ -24,6 +24,3 @@ class GmmObject(object):
             return -99999
         else:
             return self.gmm_.score(mfcc_input)
-
-
-
