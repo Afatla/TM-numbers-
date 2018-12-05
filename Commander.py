@@ -18,7 +18,7 @@ class Commander(object):
             self.winlen_ = 0.025
         self.reader_ = WaveReader.WaveReader(path_folder)
         (self.signals, self.rate) = self.reader_.read_all()
-        self.converter = WaveToMfcc.WaveToMfcc(self.signals, self.rate, self.winlen_)
+        self.converter = WaveToMfcc.WaveToMfcc(self.signals, self.rate, self.winlen_, nfilt=None, ncep=None)
         self.mfcc_array_ = self.converter.glue_all()
         self.gmm_table_ = []
         self.cross_split = CrossValidation.CrossValidation(self.converter.list_of_speakers, 2)
