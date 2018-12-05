@@ -27,14 +27,14 @@ class Commander(object):
 
     def train_all(self):
         self.gmm_table_ = []
-        for each in range(0, 9):
+        for each in range(0, 10):
             self.gmm_table_.append(GmmObject.GmmObject(16, self.mfcc_array_[each]))
         for each in self.gmm_table_:
             each.train_data()
 
     def train(self, mfcc):
         gmm_table_ = []
-        for each in range(0, 9):
+        for each in range(0, 10):
             gmm_table_.append(GmmObject.GmmObject(16, mfcc[each]))
         for each in gmm_table_:
             each.train_data()
@@ -63,14 +63,13 @@ class Commander(object):
             rr[0, i_r] = classificator.get_RR()
             i_r += 1
 
-            self.results_ = results
-            self.rr_ = rr
-            rr_i = np.mean(rr)
-        return results, rr
+        self.results_ = results
+        rr_i = np.mean(rr)
+        self.rr_ = rr_i
+        return results, rr_i
 
     def write_to_csv(self, file_name):
         temp = np.array([])
-
         if self.results_ == temp or self.rr_ == temp:
             print("NOTHING TO WRITE")
         else:

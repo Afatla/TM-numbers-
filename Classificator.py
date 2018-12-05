@@ -26,14 +26,16 @@ class Classificator(object):
         for gmm in self.gmm_list:
             gmm = gmm.gmm_.score(self.mfcc_)
             scores_list.append(gmm)
-        mean_list = scores_list
+        mean_list = []
         for i in range(0, 10):
-            mean_list[i] = np.mean(np.delete(scores_list[i]))
-        scores_list -= mean_list
+            list_without_x = np.delete(scores_list, i)
+            mean_list.append(np.mean(list_without_x))
+        scores_list = np.array(scores_list) - np.array(mean_list)
         max_likelihood = np.max(scores_list)
-        if scores_list.index(max_likelihood) == mfcc_digit:
+
+        if np.argwhere(scores_list == max_likelihood) == mfcc_digit:
             self.n_correct += 1
-        return scores_list.index(max_likelihood)
+        return np.argwhere(scores_list == max_likelihood)
 
     def get_RR(self):
         return self.n_correct/self.n_iterations
