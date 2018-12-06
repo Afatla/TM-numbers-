@@ -7,9 +7,8 @@ Requirements:
     002.WAV,2,-73.89
     003.WAV,2,-32.99
     004.WAV,3,-94.24
-
 Marcin Witkowski
-AGH November 2017
+AGH November 2017ą
 """
 import matplotlib.pyplot as plt
 

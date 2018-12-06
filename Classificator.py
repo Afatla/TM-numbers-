@@ -18,7 +18,7 @@ class Classificator(object):
         max_likelihood = np.max(scores_list)
         if scores_list.index(max_likelihood) == mfcc_digit:
             self.n_correct += 1
-        return scores_list.index(max_likelihood)
+        return scores_list.index(max_likelihood), max_likelihood
 
     def classify_norm(self, mfcc_digit):
         self.n_iterations += 1
@@ -35,7 +35,7 @@ class Classificator(object):
 
         if np.argwhere(scores_list == max_likelihood) == mfcc_digit:
             self.n_correct += 1
-        return np.argwhere(scores_list == max_likelihood)
+        return np.argwhere(scores_list == max_likelihood), max_likelihood
 
     def get_RR(self):
         return self.n_correct/self.n_iterations

@@ -18,7 +18,7 @@ class Commander(object):
             self.winlen_ = 0.025
         self.reader_ = WaveReader.WaveReader(path_folder)
         (self.signals, self.rate) = self.reader_.read_all()
-        self.converter = WaveToMfcc.WaveToMfcc(self.signals, self.rate, self.winlen_, nfilt=None, ncep=None)
+        self.converter = WaveToMfcc.WaveToMfcc(self.signals, self.rate, self.winlen_, nfilt=30, ncep=7)
         self.mfcc_array_ = self.converter.glue_all()
         self.gmm_table_ = []
         self.cross_split = CrossValidation.CrossValidation(self.converter.list_of_speakers, 2)
@@ -49,16 +49,18 @@ class Commander(object):
             trained_gmm = self.train(train_mfcc)
             classificator = Classificator.Classificator([], trained_gmm)
             results_onetest = np.zeros((20, 1))
+            results_likelyhoods = np.zeros((20, 1))
             idx = 0
             names = np.chararray((20, 1), itemsize=12, unicode=True)
             for one_test in test:
                 mfcc_table = self.converter.glue(one_test)
                 for i in range(0, 10):
                     classificator.mfcc_ = mfcc_table[i]
-                    results_onetest[idx, 0] = classificator.classify(i)
+                    results_onetest[idx, 0] = classificator.classify(i)[0]
+                    results_likelyhoods[idx, 0] = classificator.classify(i)[1]
                     names[idx, 0] = self.converter.list_of_speakers[one_test]+"_" + str(i) + '_.wav'
                     idx += 1
-            results_onetest = np.concatenate((names, results_onetest), axis=1)
+            results_onetest = np.concatenate((names, results_onetest, results_likelyhoods), axis=1)
             results.append(results_onetest)
             rr[0, i_r] = classificator.get_RR()
             i_r += 1
