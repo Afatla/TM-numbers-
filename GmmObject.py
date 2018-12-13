@@ -7,7 +7,8 @@ class GmmObject(object):
 
     # constructor
     def __init__(self, n_components, mfcc_input):
-        self.gmm_ = sklearn.mixture.gaussian_mixture.GaussianMixture(n_components=n_components, random_state=3)
+        self.gmm_ = sklearn.mixture.gaussian_mixture.GaussianMixture(n_components=n_components, random_state=3
+                                                                     , covariance_type='full')
         self.untrained = True
         self.mfcc_ = mfcc_input
 

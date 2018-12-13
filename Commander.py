@@ -7,7 +7,10 @@ import Classificator
 import CrossValidation
 import numpy as np
 import RestultsCsv
-
+import os
+import scipy.io.wavfile as wav
+from python_speech_features import mfcc
+import EvaluateObject
 
 class Commander(object):
 
@@ -19,7 +22,6 @@ class Commander(object):
         self.reader_ = WaveReader.WaveReader(path_folder)
         (self.signals, self.rate) = self.reader_.read_all()
         self.converter = WaveToMfcc.WaveToMfcc(self.signals, self.rate, self.winlen_, nfilt=30, ncep=7)
-        self.mfcc_array_ = self.converter.glue_all()
         self.gmm_table_ = []
         self.cross_split = CrossValidation.CrossValidation(self.converter.list_of_speakers, 2)
         self.results_ = np.array([])
@@ -77,3 +79,37 @@ class Commander(object):
         else:
             writer = RestultsCsv.ResultsCsv(self.results_, self.rr_, file_name)
             writer.write_to_csv()
+
+    def eval_test(self):
+        results = []
+        train_mfcc = self.converter.glue_all()
+        trained_gmm = self.train(train_mfcc)
+        classificator = Classificator.Classificator([], trained_gmm)
+        idx = 0
+        path_ = "eval"
+        keys = EvaluateObject.load_keys()
+        for file in os.listdir(path_):
+            path = os.path.join(path_, file)
+            (rate, number_1) = wav.read(path)
+            mfcc_table = mfcc(number_1, rate, appendEnergy=False, winlen=0.015, nfilt=30, numcep=7, ceplifter=0)
+            mfcc_table -= np.mean(mfcc_table, axis=0)
+            mfcc_table = mfcc_table / np.std(mfcc_table)
+            classificator.mfcc_ = mfcc_table
+            name = os.path.basename(path)
+            (result,  results_likelyhoods) = classificator.classify(keys[os.path.basename(path)])
+            idx += 1
+            result = np.array((name, result, results_likelyhoods), dtype=object)
+            results.append(result)
+        rr = classificator.get_RR()
+        self.results_ = results
+        self.rr_ = rr
+        return results, rr
+
+    def write_to_csv_else(self, file_name):
+        temp = np.array([])
+        if self.results_ == temp or self.rr_ == temp:
+            print("NOTHING TO WRITE")
+        else:
+            writer = RestultsCsv.ResultsCsv(self.results_, self.rr_, file_name)
+            writer.write_to_csv_else()
+        EvaluateObject.evaluate()

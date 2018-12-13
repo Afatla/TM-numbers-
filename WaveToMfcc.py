@@ -1,7 +1,8 @@
 """ This program will convert wave files to MFCC"""
 import numpy as np
 from python_speech_features import mfcc
-
+import librosa.feature
+import python_speech_features
 
 class WaveToMfcc(object):
 
@@ -28,23 +29,17 @@ class WaveToMfcc(object):
 
         for row in range(0, len(self.wave_array_)):
             for index in range(0, len(self.wave_array_[0]) - 1):
-                mfcc_i = mfcc(self.wave_array_[row][index], self.rate_, appendEnergy=False, winlen=winlen_,
-                              nfilt=nfilt_, numcep=numcep_)
                 mfcc_array[row][index] = mfcc(self.wave_array_[row][index], self.rate_, appendEnergy=False,
-                                              winlen=winlen_, nfilt=nfilt_, numcep=numcep_, ceplifter=0)
-
+                                              winlen=winlen_, nfilt=nfilt_, numcep=numcep_, ceplifter= 0)
                 # Cepstral Mean Substraction
 
                 #if index != len(self.wave_array_[0]) - 1:
                     #mfcc_array[row][index] -= np.mean(mfcc_array[row][index], axis=0)
 
                 # Cepstral Mean Variance Normalisation
-
                 if index != len(self.wave_array_[0]) - 1:
                     mfcc_array[row][index] -= np.mean(mfcc_array[row][index], axis=0)
                     mfcc_array[row][index] = mfcc_array[row][index]/np.std(mfcc_array[row][index])
-
-
         return mfcc_array
 
     def glue(self, indexes):
